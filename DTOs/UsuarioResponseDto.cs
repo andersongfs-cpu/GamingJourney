@@ -1,4 +1,6 @@
-﻿namespace GamingJourney.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GamingJourney.DTOs
 {
 	public class UsuarioResponseDto
 	{

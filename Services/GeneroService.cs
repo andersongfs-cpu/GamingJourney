@@ -16,6 +16,19 @@ namespace GamingJourney.Services
 			_mapper = mapper;			
 		}
 
+		// Lista generos por nome
+		public async Task<List<GeneroExibicaoDto>> GetTodos(string? nome)
+		{
+			var query = _context.Generos.AsQueryable();
+			if (!string.IsNullOrWhiteSpace(nome))
+			{
+				query = query.Where(q => q.Nome.Contains(nome));
+			}
+
+			var generos = await query.ToListAsync();
+			return _mapper.Map<List<GeneroExibicaoDto>>(generos);
+		}
+
 		// Registra um novo gênero
 		public async Task<GeneroResponseDto> RegistrarAsync(GeneroRegistroDto dto)
 		{
@@ -33,5 +46,7 @@ namespace GamingJourney.Services
 
 			return _mapper.Map<GeneroResponseDto>(genero);
 		}
+
+		
 	}
 }

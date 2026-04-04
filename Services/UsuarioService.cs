@@ -90,7 +90,7 @@ namespace GamingJourney.Services
 			return tokenHandler.WriteToken(token);
 		}
 
-		// Lista usuários
+		// Lista usuários por Nome e Email
 		public async Task<List<UsuarioExibicaoDto>> GetTodos(string? nome, string? email)
 		{
 			var query = _context.Usuarios.AsQueryable();
@@ -108,6 +108,16 @@ namespace GamingJourney.Services
 			var usuario = await query.ToListAsync();
 
 			return _mapper.Map<List<UsuarioExibicaoDto>>(usuario);
+		}
+
+		// Lista usuários por Id
+		public async Task<UsuarioExibicaoDto?> GetPorId(int id)
+		{
+			var usuario = await _context.Usuarios.FindAsync(id);
+			
+			if (usuario == null){ return null; }
+
+			return _mapper.Map<UsuarioExibicaoDto>(usuario);
 		}
 	}
 }

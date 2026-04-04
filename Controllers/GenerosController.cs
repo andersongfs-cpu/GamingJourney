@@ -32,5 +32,14 @@ namespace GamingJourney.Controllers
 				return BadRequest(new { message = ex.Message });
 			}
 		}
+
+		[HttpGet("generos")]
+		public async Task<ActionResult<List<GeneroExibicaoDto>>> ExibirGeneros([FromQuery] string? nome)
+		{
+			var lista = await _generoService.GetTodos(nome);
+			return Ok(lista);
+		}
+
+		
 	}
 }

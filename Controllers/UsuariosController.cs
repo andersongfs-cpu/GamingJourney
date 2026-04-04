@@ -28,7 +28,7 @@ namespace GamingJourney.Controllers
 			try
 			{
 				var resultado = await _usuarioService.RegistrarAsync(dto);
-				return CreatedAtAction(nameof(Registrar), resultado);
+				return CreatedAtAction(nameof(GetPorId), new { id = resultado.Id }, resultado);
 			}
 			catch (Exception ex)
 			{
@@ -52,9 +52,19 @@ namespace GamingJourney.Controllers
 			}
 		}
 
+		[HttpGet("{id:int}")]
+		[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<IActionResult> GetPorId(int id)
+		{
+			var usuario = await _usuarioService.GetPorId(id);
+			if (usuario == null) return NotFound();
+			return Ok(usuario);
+		}
+
 		[HttpGet("usuarios")]
 		public async Task<ActionResult<List<UsuarioExibicaoDto>>> ExibirUsuarios(
-		[FromQuery] string? nome, 
+		[FromQuery] string? nome,
 		[FromQuery] string? email)
 		{
 			var lista = await _usuarioService.GetTodos(nome, email);

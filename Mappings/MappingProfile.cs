@@ -19,6 +19,8 @@ namespace GamingJourney.Mappings
 			CreateMap<Usuario, UsuarioResponseDto>();
 
 			CreateMap<Usuario, UsuarioExibicaoDto>();
+
+			CreateMap<Genero, GeneroExibicaoDto>();
 			
 			CreateMap<Genero, GeneroResponseDto>();
 		}
