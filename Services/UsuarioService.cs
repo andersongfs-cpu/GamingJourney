@@ -106,7 +106,7 @@ namespace GamingJourney.Services
 			}
 
 			var usuario = await query.ToListAsync();
-			
+
 			return _mapper.Map<List<UsuarioExibicaoDto>>(usuario);
 		}
 	}

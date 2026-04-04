@@ -36,8 +36,9 @@ builder.Services.AddSingleton(new MapperConfiguration(cfg =>
 	cfg.AddProfile<MappingProfile>();
 }).CreateMapper());
 
-// UsuarioService
+// Services
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<GeneroService>();
 
 // Swagger
 builder.Services.AddControllers();
