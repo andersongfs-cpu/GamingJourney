@@ -17,6 +17,10 @@
 # Mono auto generated files
 mono_crash.*
 
+# Pasta de imagens de catálogo (GamingJourney)
+wwwroot/images/*
+!wwwroot/images/.gitkeep
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

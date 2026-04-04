@@ -2,7 +2,16 @@
 using GamingJourney.Data;
 using GamingJourney.DTOs;
 using GamingJourney.Models;
+using GamingJourney.Mappings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace GamingJourney.Services
 {
@@ -10,18 +19,21 @@ namespace GamingJourney.Services
 	{
 		private readonly AppDbContext _context;
 		private readonly IMapper _mapper;
+		private readonly IConfiguration _configuration;
 
-		public UsuarioService(AppDbContext context, IMapper mapper)
+		public UsuarioService(AppDbContext context, IMapper mapper, IConfiguration configuration)
 		{
 			_context = context;
 			_mapper = mapper;
+			_configuration = configuration;
 		}
 
+		// Registra um novo usuário
 		public async Task<UsuarioResponseDto> RegistrarAsync(UsuarioRegistroDto dto)
 		{
 			// Verifica se Email já existe
 			var emailExiste = await _context.Usuarios.AnyAsync(e => e.Email == dto.Email);
-			
+
 			if (emailExiste)
 			{
 				throw new Exception("Email já cadastrado.");
@@ -40,6 +52,62 @@ namespace GamingJourney.Services
 			await _context.SaveChangesAsync();
 
 			return _mapper.Map<UsuarioResponseDto>(usuario);
+		}
+
+		// Login
+		public async Task<string> LoginAsync(UsuarioLoginDto dto)
+		{
+			var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+			if (usuario == null || !BCrypt.Net.BCrypt.Verify(dto.Senha, usuario.SenhaHash))
+			{
+				throw new Exception("Email ou senha inválidos");
+			}
+
+			return GerarToken(usuario);
+		}
+
+		// Gerar token
+		private string GerarToken(Usuario usuario)
+		{
+			var tokenHandler = new JwtSecurityTokenHandler();
+			var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+			var tokenDescriptor = new SecurityTokenDescriptor
+			{
+				Subject = new ClaimsIdentity(new[]
+				{
+					new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+					new Claim(ClaimTypes.Name, usuario.Nome),
+					new Claim(ClaimTypes.Email, usuario.Email)
+				}),
+				Expires = DateTime.UtcNow.AddHours(8),
+				SigningCredentials = new SigningCredentials(
+					new SymmetricSecurityKey(key),
+					SecurityAlgorithms.HmacSha256Signature)
+			};
+
+			var token = tokenHandler.CreateToken(tokenDescriptor);
+			return tokenHandler.WriteToken(token);
+		}
+
+		// Lista usuários
+		public async Task<List<UsuarioExibicaoDto>> GetTodos(string? nome, string? email)
+		{
+			var query = _context.Usuarios.AsQueryable();
+
+			if (!string.IsNullOrWhiteSpace(nome))
+			{
+				query = query.Where(q => q.Nome.Contains(nome));
+			}
+
+			if (!string.IsNullOrWhiteSpace(email))
+			{
+				query = query.Where(q => q.Email.Contains(email));
+			}
+
+			var usuario = await query.ToListAsync();
+			
+			return _mapper.Map<List<UsuarioExibicaoDto>>(usuario);
 		}
 	}
 }

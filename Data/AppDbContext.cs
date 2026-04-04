@@ -10,5 +10,17 @@ namespace GamingJourney.Data
 
 		// Tabelas criadas com base nas Classes/Models:	
 		public DbSet<Usuario> Usuarios { get; set; }
+		public DbSet<Genero> Generos { get; set; }
+		public DbSet<Jogo> Jogos{ get; set; }
+		public DbSet<UsuarioJogo> UsuariosJogos { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder.Entity<UsuarioJogo>()
+				.Property(l => l.Nota)
+				.HasColumnType("decimal(3,1)");
+
+			base.OnModelCreating(modelBuilder);
+		}
 	}
 }

@@ -15,6 +15,8 @@ namespace GamingJourney.Mappings
 			// Transforma o que veio do BD em um pacote DTO
 			// De: Modelo de BD -> Para: Resposta visual
 			CreateMap<Usuario, UsuarioResponseDto>();
+
+			CreateMap<Usuario, UsuarioExibicaoDto>();
 		}
 	}
 }
