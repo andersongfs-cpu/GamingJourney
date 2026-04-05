@@ -72,7 +72,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Banco de dados:
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 

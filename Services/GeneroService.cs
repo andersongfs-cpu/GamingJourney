@@ -45,8 +45,6 @@ namespace GamingJourney.Services
 			await _context.SaveChangesAsync();
 
 			return _mapper.Map<GeneroResponseDto>(genero);
-		}
-
-		
+		}		
 	}
 }

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Identity.Client;
 
 namespace GamingJourney.Services
 {
@@ -118,6 +120,51 @@ namespace GamingJourney.Services
 			if (usuario == null){ return null; }
 
 			return _mapper.Map<UsuarioExibicaoDto>(usuario);
+		}
+
+		// Edita/Put usuários por Id
+		public async Task<UsuarioExibicaoDto?> AttUsuario(int id, UsuarioAtualizarDto editDto)
+		{
+			var usuario = await _context.Usuarios.FindAsync(id);
+			if (usuario == null) return null;
+
+			if (!string.IsNullOrWhiteSpace(editDto.Nome))
+			{
+				usuario.Nome = editDto.Nome;
+			}
+
+			if (!string.IsNullOrWhiteSpace(editDto.Email) && editDto.Email != usuario.Email)
+			{
+				var existeEmail = await _context.Usuarios.AnyAsync(e => e.Email == editDto.Email);
+				if (existeEmail)
+				{
+					throw new Exception("Email já cadastrado.");
+				}
+				usuario.Email = editDto.Email;
+				usuario.EmailConfirmado = false;
+				usuario.TokenConfirmacao = Guid.NewGuid().ToString();
+			}
+
+			if (!string.IsNullOrWhiteSpace(editDto.Senha))
+			{
+				usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(editDto.Senha);
+			}
+
+			if (editDto.DtNasc.HasValue)
+			{
+				usuario.DtNasc = editDto.DtNasc.Value;
+			}
+			await _context.SaveChangesAsync();
+			return _mapper.Map<UsuarioExibicaoDto>(usuario);
+		}
+
+		public async Task<bool?> DelUsuario(int id)
+		{
+			var usuario = await _context.Usuarios.FindAsync(id);
+			if (usuario == null) return null;
+
+			_context.Usuarios.Remove(usuario);
+			return await _context.SaveChangesAsync() > 0;
 		}
 	}
 }
