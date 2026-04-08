@@ -36,9 +36,11 @@ builder.Services.AddSingleton(new MapperConfiguration(cfg =>
 	cfg.AddProfile<MappingProfile>();
 }).CreateMapper());
 
-// Services
+// Services - AddScope - Inejeção de dependência
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<GeneroService>();
+builder.Services.AddScoped<JogoService>();
+builder.Services.AddScoped<PlataformaService>();
 
 // Swagger
 builder.Services.AddControllers();

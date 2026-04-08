@@ -22,6 +22,7 @@ namespace GamingJourney.Controllers
 		}
 
 
+		// Cadastra novo usuário
 		[HttpPost("registrar")]
 		[ProducesResponseType(typeof(UsuarioResponseDto), StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -38,6 +39,7 @@ namespace GamingJourney.Controllers
 			}
 		}
 
+		// Login
 		[HttpPost("login")]
 		[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,6 +56,7 @@ namespace GamingJourney.Controllers
 			}
 		}
 
+		// Busca usuário por Id
 		[HttpGet("{id:int}")]
 		[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,13 +66,15 @@ namespace GamingJourney.Controllers
 			if (usuario == null) return NotFound();
 			return Ok(usuario);
 		}
-				
-		[HttpGet("usuarios")]
-		public async Task<ActionResult<List<UsuarioExibicaoDto>>> ExibirUsuarios(
+
+		// Busca usuário por Nome ou Email
+		[HttpGet]
+		[ProducesResponseType(typeof(List<UsuarioExibicaoDto>), StatusCodes.Status200OK)]
+		public async Task<ActionResult<List<UsuarioExibicaoDto>>> Listar(
 		[FromQuery] string? nome,
 		[FromQuery] string? email)
 		{
-			var lista = await _usuarioService.GetTodos(nome, email);
+			var lista = await _usuarioService.GetTodosAsync(nome, email);
 			return Ok(lista);
 		}
 
@@ -80,9 +85,8 @@ namespace GamingJourney.Controllers
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-		public async Task<IActionResult> EditPerfil(UsuarioAtualizarDto dto)
+		public async Task<IActionResult> EditarAsync(UsuarioAtualizarDto dto)
 		{
-		//	var usuarioIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 			var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 			if (string.IsNullOrEmpty(usuarioIdClaim))
@@ -90,11 +94,14 @@ namespace GamingJourney.Controllers
 				return Unauthorized(new { message = "Token inválido ou expirado" });
 			}
 
-			int idLogado = int.Parse(usuarioIdClaim);
+			if (!int.TryParse(usuarioIdClaim, out int idLogado))
+			{
+				return BadRequest(new { message = "ID de usuário inválido no Token." });
+			}
 
 			try
 			{
-				var usuarioEdit = await _usuarioService.AttUsuario(idLogado, dto);
+				var usuarioEdit = await _usuarioService.AtualizarAsync(idLogado, dto);
 				
 				if (usuarioEdit == null)
 				{
@@ -109,9 +116,14 @@ namespace GamingJourney.Controllers
 			}
 		}
 
+		// Exclui usuário
 		[Authorize]
 		[HttpDelete("excluir-perfil")]
-		public async Task<IActionResult> delPerfil(int id)
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		public async Task<IActionResult> ExcluirPerfil()
 		{
 			var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -120,11 +132,14 @@ namespace GamingJourney.Controllers
 				return Unauthorized(new { message = "Token inválido ou expirado" });
 			}
 
-			int idLogado = int.Parse(usuarioIdClaim);
+			if (!int.TryParse(usuarioIdClaim, out int idLogado))
+			{
+				return BadRequest(new { message = "ID de usuário inválido no Token." });
+			}
 
 			try
 			{
-				var usuarioDel = await _usuarioService.DelUsuario(id);
+				var usuarioDel = await _usuarioService.DelUsuario(idLogado);
 				
 				if (usuarioDel == null) return NotFound("Usuário não encontrado.");
 
@@ -134,7 +149,6 @@ namespace GamingJourney.Controllers
 			{
 				return BadRequest(new { message = ex.Message });
 			}
-
 		}
 	}
 }

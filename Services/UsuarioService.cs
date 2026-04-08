@@ -73,14 +73,15 @@ namespace GamingJourney.Services
 		private string GerarToken(Usuario usuario)
 		{
 			var tokenHandler = new JwtSecurityTokenHandler();
-			var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+			var key = Encoding.ASCII.GetBytes(_configuration["JWT:Key"]!);
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
 				Subject = new ClaimsIdentity(new[]
 				{
 					new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
 					new Claim(ClaimTypes.Name, usuario.Nome),
-					new Claim(ClaimTypes.Email, usuario.Email)
+					new Claim(ClaimTypes.Email, usuario.Email),
+					new Claim(ClaimTypes.Role, usuario.Cargo.ToString())
 				}),
 				Expires = DateTime.UtcNow.AddHours(8),
 				SigningCredentials = new SigningCredentials(
@@ -93,7 +94,7 @@ namespace GamingJourney.Services
 		}
 
 		// Lista usuários por Nome e Email
-		public async Task<List<UsuarioExibicaoDto>> GetTodos(string? nome, string? email)
+		public async Task<List<UsuarioExibicaoDto>> GetTodosAsync(string? nome, string? email)
 		{
 			var query = _context.Usuarios.AsQueryable();
 
@@ -123,7 +124,7 @@ namespace GamingJourney.Services
 		}
 
 		// Edita/Put usuários por Id
-		public async Task<UsuarioExibicaoDto?> AttUsuario(int id, UsuarioAtualizarDto editDto)
+		public async Task<UsuarioExibicaoDto?> AtualizarAsync(int id, UsuarioAtualizarDto editDto)
 		{
 			var usuario = await _context.Usuarios.FindAsync(id);
 			if (usuario == null) return null;
@@ -158,6 +159,7 @@ namespace GamingJourney.Services
 			return _mapper.Map<UsuarioExibicaoDto>(usuario);
 		}
 
+		// Deleta usuário do BD
 		public async Task<bool?> DelUsuario(int id)
 		{
 			var usuario = await _context.Usuarios.FindAsync(id);

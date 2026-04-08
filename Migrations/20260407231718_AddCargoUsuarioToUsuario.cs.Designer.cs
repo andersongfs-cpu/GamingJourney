@@ -4,6 +4,7 @@ using GamingJourney.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamingJourney.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260407231718_AddCargoUsuarioToUsuario.cs")]
+    partial class AddCargoUsuarioToUsuariocs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,6 +53,10 @@ namespace GamingJourney.Migrations
                     b.Property<string>("CapaUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Plataforma")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -57,26 +64,6 @@ namespace GamingJourney.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Jogos");
-                });
-
-            modelBuilder.Entity("GamingJourney.Models.Plataforma", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("LogoUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Plataformas");
                 });
 
             modelBuilder.Entity("GamingJourney.Models.Usuario", b =>
@@ -121,8 +108,11 @@ namespace GamingJourney.Migrations
 
             modelBuilder.Entity("GamingJourney.Models.UsuarioJogo", b =>
                 {
-                    b.Property<int>("UsuarioId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("JogoId")
                         .HasColumnType("int");
@@ -133,9 +123,14 @@ namespace GamingJourney.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("UsuarioId", "JogoId");
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("JogoId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("UsuariosJogos");
                 });
@@ -153,21 +148,6 @@ namespace GamingJourney.Migrations
                     b.HasIndex("JogosId");
 
                     b.ToTable("GeneroJogo");
-                });
-
-            modelBuilder.Entity("JogoPlataforma", b =>
-                {
-                    b.Property<int>("JogosId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlataformasId")
-                        .HasColumnType("int");
-
-                    b.HasKey("JogosId", "PlataformasId");
-
-                    b.HasIndex("PlataformasId");
-
-                    b.ToTable("JogoPlataforma");
                 });
 
             modelBuilder.Entity("GamingJourney.Models.UsuarioJogo", b =>
@@ -200,21 +180,6 @@ namespace GamingJourney.Migrations
                     b.HasOne("GamingJourney.Models.Jogo", null)
                         .WithMany()
                         .HasForeignKey("JogosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("JogoPlataforma", b =>
-                {
-                    b.HasOne("GamingJourney.Models.Jogo", null)
-                        .WithMany()
-                        .HasForeignKey("JogosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GamingJourney.Models.Plataforma", null)
-                        .WithMany()
-                        .HasForeignKey("PlataformasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -4,12 +4,13 @@
 	{
 		toPlay = 0,
 		playing = 1,
-		completed = 2
+		completed = 2,
+		onHold = 3,
+		dropped = 4
 	}
 	
 	public class UsuarioJogo
 	{
-		public int Id { get; set; }
 		public int UsuarioId { get; set; }
 		public Usuario Usuario { get; set; } = null!;
 		public int JogoId{ get; set; }

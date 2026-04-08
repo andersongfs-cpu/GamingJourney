@@ -9,6 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20260402212008_CriandoTabelaUsuarios.cs" />
+    <Compile Remove="Migrations\20260402212008_CriandoTabelaUsuarios.Designer.cs" />
+    <Compile Remove="Migrations\20260402213107_UpdateUsuariosDb.cs" />
+    <Compile Remove="Migrations\20260402213107_UpdateUsuariosDb.Designer.cs" />
+    <Compile Remove="Migrations\20260403223003_AdicionandoEstruturaJogosEGeneros.cs" />
+    <Compile Remove="Migrations\20260403223003_AdicionandoEstruturaJogosEGeneros.Designer.cs" />
+    <Compile Remove="Migrations\20260403224308_DbContextGeneroJogoUsuarioJogo.cs" />
+    <Compile Remove="Migrations\20260403224308_DbContextGeneroJogoUsuarioJogo.Designer.cs" />
+    <Compile Remove="Migrations\20260407231718_AddCargoUsuarioToUsuario.cs.cs" />
+    <Compile Remove="Migrations\20260407231718_AddCargoUsuarioToUsuario.cs.Designer.cs" />
+    <Compile Remove="Migrations\20260408035741_RecriandoModelosComPlataforma.cs" />
+    <Compile Remove="Migrations\20260408035741_RecriandoModelosComPlataforma.Designer.cs" />
+    <Compile Remove="Migrations\20260408040806_AddEditModels.cs" />
+    <Compile Remove="Migrations\20260408040806_AddEditModels.Designer.cs" />
+    <Compile Remove="Migrations\20260408083214_Inicial.cs" />
+    <Compile Remove="Migrations\20260408083214_Inicial.Designer.cs" />
+    <Compile Remove="Migrations\AppDbContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
@@ -26,6 +46,7 @@
 
   <ItemGroup>
     <Folder Include="Middlewares\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

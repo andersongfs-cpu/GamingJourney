@@ -12,6 +12,7 @@ namespace GamingJourney.Data
 		public DbSet<Usuario> Usuarios { get; set; }
 		public DbSet<Genero> Generos { get; set; }
 		public DbSet<Jogo> Jogos{ get; set; }
+		public DbSet<Plataforma> Plataformas { get; set; }		
 		public DbSet<UsuarioJogo> UsuariosJogos { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,6 +20,9 @@ namespace GamingJourney.Data
 			modelBuilder.Entity<UsuarioJogo>()
 				.Property(l => l.Nota)
 				.HasColumnType("decimal(3,1)");
+
+			modelBuilder.Entity<UsuarioJogo>()
+				.HasKey(uj => new { uj.UsuarioId, uj.JogoId });
 
 			base.OnModelCreating(modelBuilder);
 		}
