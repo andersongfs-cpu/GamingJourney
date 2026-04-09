@@ -2,7 +2,6 @@
 using GamingJourney.Data;
 using GamingJourney.DTOs;
 using GamingJourney.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GamingJourney.Services
@@ -50,9 +49,13 @@ namespace GamingJourney.Services
 		// Lista os jogos por Id
 		public async Task<JogoExibicaoDto?> ExibirTodosIdAsync(int id)
 		{
-			var jogo = await _context.Jogos.FindAsync(id);
+			var jogo = await _context.Jogos
+			.Include(j => j.Generos)
+			.Include(j => j.Plataformas)
+			.FirstOrDefaultAsync(j => j.Id == id);
+
 			if (jogo == null) return null;
-			
+
 			return _mapper.Map<JogoExibicaoDto>(jogo);
 		}
 
@@ -87,6 +90,60 @@ namespace GamingJourney.Services
 
 			await _context.SaveChangesAsync();
 			return _mapper.Map<JogoResponseDto>(jogo);
+		}
+
+		// Edita/Atualiza um jogo
+		public async Task<JogoExibicaoDto?> AtualizarAsync(int id, JogoAtualizarDto dto)
+		{
+			var jogo = await _context.Jogos
+			.Include(j => j.Generos)
+			.Include(j => j.Plataformas)
+			.FirstOrDefaultAsync(j => j.Id == id);
+
+			if (jogo == null) return null;
+
+			if (!string.IsNullOrWhiteSpace(dto.Titulo))
+			{
+				var existe = await _context.Jogos.AnyAsync(j => j.Titulo == dto.Titulo && j.Id != id);
+				if (existe)
+				{
+					throw new Exception("Titulo de jogo já existente");
+				}
+				jogo.Titulo = dto.Titulo;
+			}
+
+			if (!string.IsNullOrWhiteSpace(dto.CapaUrl))
+			{
+				jogo.CapaUrl = dto.CapaUrl;
+			}
+
+			if (dto.GenerosIds != null)
+			{
+				jogo.Generos = await _context.Generos
+					.Where(j => dto.GenerosIds.Contains(j.Id))
+					.ToListAsync();
+			}
+
+			if (dto.PlataformasIds != null)
+			{
+				jogo.Plataformas = await _context.Plataformas
+					.Where(j => dto.PlataformasIds.Contains(j.Id))
+					.ToListAsync();
+			}
+
+			await _context.SaveChangesAsync();
+			return _mapper.Map<JogoExibicaoDto>(jogo);
+		}
+
+		// Exclui um jogo do BD por Id
+		public async Task<bool?> DeletarJogoAsync(int id)
+		{
+			var jogo = await _context.Jogos.FindAsync(id);
+
+			if (jogo == null) throw new Exception("Jogo não encontrado");
+
+			_context.Jogos.Remove(jogo);
+			return await _context.SaveChangesAsync() > 0;
 		}
 	}
 

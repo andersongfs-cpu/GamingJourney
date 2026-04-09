@@ -80,5 +80,19 @@ namespace GamingJourney.Controllers
 
 			return NoContent();
 		}
+
+		// Edita/Put gênero por Id
+		[HttpPut("{id:int}")]
+		[ProducesResponseType(typeof(GeneroExibicaoDto), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<GeneroExibicaoDto>> AtualizarGenero(int id, GeneroAtualizarDto dto)
+		{
+			var generoEdit = await _generoService.AtualizarAsync(id, dto);
+			if (generoEdit == null)
+			{
+				return NotFound("Genero não encontrado.");
+			}
+			return Ok(generoEdit);
+		}
 	}
 }

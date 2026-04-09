@@ -28,17 +28,13 @@ namespace GamingJourney.Mappings
 
 			CreateMap<Genero, GeneroExibicaoDto>();
 
-			CreateMap<Jogo, JogoResponseDto>()
-				.ForMember(dest => dest.Generos, opt => opt.MapFrom(src =>
-					(src.Generos ?? new List<Genero>()).Select(g => g.Nome).ToList()))
-				.ForMember(dest => dest.Plataformas, opt => opt.MapFrom(src =>
-					(src.Plataformas ?? new List<Plataforma>()).Select(p => p.Nome).ToList()));
+			CreateMap<Jogo, JogoResponseDto>();
 
-			CreateMap<Jogo, JogoExibicaoDto>()
-				.ForMember(dest => dest.Generos, opt => opt.MapFrom(src =>
-					(src.Generos ?? new List<Genero>()).Select(g => g.Nome).ToList()))
-				.ForMember(dest => dest.Plataformas, opt => opt.MapFrom(src =>
-					(src.Plataformas ?? new List<Plataforma>()).Select(p => p.Nome).ToList()));
+			CreateMap<Jogo, JogoExibicaoDto>();
+
+			CreateMap<Plataforma, PlataformaResponseDto>();
+
+			CreateMap<Plataforma, PlataformaExibicaoDto>();
 		}
 	}
 }
