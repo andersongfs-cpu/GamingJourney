@@ -14,6 +14,7 @@ namespace GamingJourney.Data
 		public DbSet<Jogo> Jogos{ get; set; }
 		public DbSet<Plataforma> Plataformas { get; set; }		
 		public DbSet<UsuarioJogo> UsuariosJogos { get; set; }
+		
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

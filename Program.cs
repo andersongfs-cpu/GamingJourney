@@ -41,6 +41,7 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<GeneroService>();
 builder.Services.AddScoped<JogoService>();
 builder.Services.AddScoped<PlataformaService>();
+builder.Services.AddScoped<UsuarioJogoService>();
 
 // Swagger
 builder.Services.AddControllers();
@@ -85,9 +86,10 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseMiddleware<GamingJourney.Middlewares.ExceptionMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
-app.UseStaticFiles();
 app.Run();

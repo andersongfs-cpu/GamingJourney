@@ -34,7 +34,7 @@ namespace GamingJourney.Controllers
 			return Ok(jogos);
 		}
 
-		// Lista jogos dacastrados por Id
+		// Lista jogos castrados por Id
 		[HttpGet("{id:int}")]
 		public async Task<ActionResult<JogoExibicaoDto>> ExibirJogosId(int id)
 		{
@@ -49,7 +49,7 @@ namespace GamingJourney.Controllers
 		public async Task<IActionResult> RegistrarJogo(JogoRegistroDto dto)
 		{
 			var jogo = await _jogoService.RegistrarAsync(dto);
-			return CreatedAtAction(nameof(RegistrarJogo), jogo);
+			return CreatedAtAction(nameof(ExibirJogosId), new { id = jogo.Id }, jogo);
 		}
 
 		// Edita/Atualiza um jogo cadastrado
