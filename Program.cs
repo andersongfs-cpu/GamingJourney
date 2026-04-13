@@ -44,7 +44,12 @@ builder.Services.AddScoped<PlataformaService>();
 builder.Services.AddScoped<UsuarioJogoService>();
 
 // Swagger
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	.AddJsonOptions(options =>
+	{
+		// Transforma Enums em strings
+		options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+	});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -86,10 +91,10 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseMiddleware<GamingJourney.Middlewares.ExceptionMiddleware>();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
-app.UseMiddleware<GamingJourney.Middlewares.ExceptionMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
