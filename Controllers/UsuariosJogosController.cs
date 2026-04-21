@@ -17,6 +17,7 @@ namespace GamingJourney.Controllers
 			_usuarioJogoService = usuarioJogoService;
 		}
 
+		// Adicionar jogo a lista do usuário
 		[HttpPost("adicionar")]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		public async Task<IActionResult> AdicionarJogoAColecao(UsuarioJogoColecaoDto dto)
@@ -28,6 +29,8 @@ namespace GamingJourney.Controllers
 			return Ok(resultado);
 		}
 
+
+		// Mostra a lista de jogos do usuário
 		[HttpGet]
 		public async Task<ActionResult<List<UsuarioJogoExibicaoDto>>> ExibirListaDeJogos(
 		[FromQuery] string? nomeJogo,
@@ -42,6 +45,8 @@ namespace GamingJourney.Controllers
 
 			return Ok(resultado);
 		}
+
+		// Deleta jogo da lista do usuário		
 
 	}
 }

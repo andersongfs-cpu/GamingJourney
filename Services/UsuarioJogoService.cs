@@ -97,11 +97,25 @@ namespace GamingJourney.Services
 				Plataforma = string.Join(", ", j.Jogo.Plataformas.Select(p => p.Nome)),
 				Genero = string.Join(", ", j.Jogo.Generos.Select(g => g.Nome)),
 				Status = j.Status,
-				CapaUrl = "https://localhost:7064/" + j.Jogo.CapaUrl
+				CapaUrl = j.Jogo.CapaUrl
 			})			
 			.ToListAsync();
 
 			return listaJogos;
+		}
+
+		// Deleta jogo da lista do usuário
+		public async Task<bool?> DeletarJogoAsync(int usuarioId, int? jogoId, string? nomeJogo)
+		{
+			var query = _context.UsuariosJogos.AsQueryable().Where(u => u.UsuarioId == usuarioId);
+
+			UsuarioJogo? delJogo= null;
+
+			if (jogoId.HasValue)
+			{
+				
+				_context.UsuariosJogos.Remove(delJogo);
+			}
 		}
 	}
 }
