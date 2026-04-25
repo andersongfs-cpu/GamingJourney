@@ -2,6 +2,7 @@
 using GamingJourney.Data;
 using GamingJourney.DTOs;
 using GamingJourney.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace GamingJourney.Services
@@ -107,15 +108,89 @@ namespace GamingJourney.Services
 		// Deleta jogo da lista do usuário
 		public async Task<bool?> DeletarJogoAsync(int usuarioId, int? jogoId, string? nomeJogo)
 		{
+			// Segurança - Verifica Id do usuário.
 			var query = _context.UsuariosJogos.AsQueryable().Where(u => u.UsuarioId == usuarioId);
 
-			UsuarioJogo? delJogo= null;
+			// Variável começa como nula
+			UsuarioJogo? delJogo = null;
 
+			// Busca jogo na lista do usuário por Id
 			if (jogoId.HasValue)
 			{
-				
-				_context.UsuariosJogos.Remove(delJogo);
+				delJogo = await query.FirstOrDefaultAsync(uj => uj.JogoId == jogoId);
 			}
+			// Busca jogo na lista por nome caso Id não tenha sido inserido
+			else if (!string.IsNullOrWhiteSpace(nomeJogo))
+			{
+				delJogo = await query.FirstOrDefaultAsync(uj => uj.Jogo.Titulo.ToLower() == nomeJogo.ToLower());
+			}
+
+			// Retorna null caso nenhum valor seja inserido ou jogo não encontrado
+			if (delJogo == null)
+			{
+				throw new KeyNotFoundException("Jogo não encontrado em sua lista");
+			}
+
+			_context.UsuariosJogos.Remove(delJogo);
+			await _context.SaveChangesAsync();
+
+			return true;
+		}
+
+		// Edita/Put Jogo
+		public async Task<UsuarioJogoExibicaoDto> AtualizarJogoAsync(int usuarioId, int? jogoId, string? nomeJogo, UsuarioJogoAtualizarDto editDto)
+		{
+			// Segurança - Verifica Id do usuário		
+			var query = _context.UsuariosJogos
+				.Include(uj => uj.Jogo) // Trás todos os dados do Objeto Jogo
+				.Where(u => u.UsuarioId == usuarioId) // Apenas o que pertence ao usuário dono do Token
+				.AsQueryable();
+
+			// Variável começa como nula
+			UsuarioJogo? editJogo = null;
+
+			// Busca jogo na lista do usuário por Id
+			if (jogoId.HasValue)
+			{
+				editJogo = await query.FirstOrDefaultAsync(uj => uj.JogoId == jogoId);
+			}
+
+			// Busca jogo na lista poor nome caso Id não tenha sido inserido
+			if (!string.IsNullOrEmpty(nomeJogo))
+			{
+				editJogo = await query.FirstOrDefaultAsync(uj => uj.Jogo.Titulo.ToLower() == nomeJogo.ToLower());
+			}
+
+			// Retorna null caso nenhum valor seja inserido ou jogo não encontrado
+			if (editJogo == null)
+			{
+				throw new KeyNotFoundException("Jogo não encontrado em sua lista");
+			}
+
+			// Se Status tem novo valor inserido, propriedade é atualizada
+			if (editDto.Status.HasValue)
+			{
+				editJogo.Status = editDto.Status.Value;
+			}
+
+			// Se Nota tem novo valor inserido, propriedade é atualizada
+			if (editDto.Nota.HasValue)
+			{
+				editJogo.Nota = editDto.Nota;
+			}
+
+			_context.UsuariosJogos.Update(editJogo);
+			await _context.SaveChangesAsync();
+
+			return new UsuarioJogoExibicaoDto
+			{
+				JogoNome = editJogo.Jogo?.Titulo,
+				Nota = editJogo.Nota,
+				Status = editJogo.Status,
+				CapaUrl = editJogo.Jogo?.CapaUrl,
+				Genero = editJogo.Jogo?.Generos?.FirstOrDefault()?.Nome,
+				Plataforma = editJogo.Jogo?.Plataformas?.FirstOrDefault()?.Nome
+			};
 		}
 	}
 }

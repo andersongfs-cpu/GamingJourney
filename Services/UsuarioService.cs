@@ -2,18 +2,11 @@
 using GamingJourney.Data;
 using GamingJourney.DTOs;
 using GamingJourney.Models;
-using GamingJourney.Mappings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Identity.Client;
 
 namespace GamingJourney.Services
 {

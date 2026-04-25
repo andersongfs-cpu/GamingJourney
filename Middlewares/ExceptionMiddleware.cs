@@ -28,13 +28,14 @@ namespace GamingJourney.Middlewares
 		private static Task HandleExceptionAsync(HttpContext context, Exception exception)
 		{
 			context.Response.ContentType = "application/json";
-			// Decide o status code
-			// Erro de autenticação 401 unauthorized
-			// Erro 400 BadRequest
+			
+			// Decide o status code			
 			context.Response.StatusCode = exception switch
 			{
-				UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
-				_ => (int)HttpStatusCode.BadRequest
+				UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized, // Erro de autenticação 401 unauthorized
+				KeyNotFoundException => (int)HttpStatusCode.NotFound, // Erro de não encontrado 404 NotFound
+				ArgumentException => (int)HttpStatusCode.BadRequest, // Erro de argumento inválido 400 BadRequest
+				_ => (int)HttpStatusCode.InternalServerError // Erro desconhecido 500
 			};
 
 			var response = new { message = exception.Message };

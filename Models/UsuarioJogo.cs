@@ -1,4 +1,6 @@
-﻿namespace GamingJourney.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GamingJourney.Models
 {
 	public enum StatusJogo
 	{
@@ -15,6 +17,7 @@
 		public Usuario Usuario { get; set; } = null!;
 		public int JogoId{ get; set; }
 		public Jogo Jogo { get; set; } = null!;
+		[Range(0, 10, ErrorMessage = "A nota deve ser de 0 a 10.")]
 		public decimal? Nota{ get; set; }
 		public StatusJogo Status { get; set; } = StatusJogo.toPlay;
 	}

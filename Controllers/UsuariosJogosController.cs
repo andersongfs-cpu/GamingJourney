@@ -47,6 +47,13 @@ namespace GamingJourney.Controllers
 		}
 
 		// Deleta jogo da lista do usuário		
+		[HttpDelete("remover")]
+		public async Task<IActionResult> DeletarJogo([FromQuery] int? jogoId, [FromQuery] string? nomeJogo)
+		{
+			var usuarioId = ObterUsuarioId();
+			await _usuarioJogoService.DeletarJogoAsync(usuarioId, jogoId, nomeJogo);
 
+			return NoContent();
+		}
 	}
 }
