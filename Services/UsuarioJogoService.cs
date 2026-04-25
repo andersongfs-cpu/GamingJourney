@@ -140,7 +140,7 @@ namespace GamingJourney.Services
 		// Edita/Put Jogo
 		public async Task<UsuarioJogoExibicaoDto> AtualizarJogoAsync(int usuarioId, int? jogoId, string? nomeJogo, UsuarioJogoAtualizarDto editDto)
 		{
-			// Segurança - Verifica Id do usuário		
+			// Segurança - Verifica Id do usuário
 			var query = _context.UsuariosJogos
 				.Include(uj => uj.Jogo) // Trás todos os dados do Objeto Jogo
 				.Where(u => u.UsuarioId == usuarioId) // Apenas o que pertence ao usuário dono do Token

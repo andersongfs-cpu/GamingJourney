@@ -55,5 +55,14 @@ namespace GamingJourney.Controllers
 
 			return NoContent();
 		}
+
+		// Edita jogo da lista do usuário
+		[HttpPut("editar")]
+		public async Task<IActionResult> AtualizarJogo([FromQuery] int? jogoId, [FromQuery] string? nomeJogo, [FromBody] UsuarioJogoAtualizarDto editDto)
+		{
+			var usuarioId = ObterUsuarioId();
+			var resultado = await _usuarioJogoService.AtualizarJogoAsync(usuarioId, jogoId, nomeJogo, editDto);
+			return Ok(resultado);
+		}
 	}
 }
