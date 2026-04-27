@@ -1,4 +1,8 @@
 # GamingJourney
+![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet)
+![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?logo=microsoftsqlserver&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?logo=jsonwebtokens)
 
 GamingJourney é uma API REST desenvolvida para o gerenciamento de bibliotecas pessoais de jogos. A aplicação permite que usuários, após se cadastrarem e fazerem um login, cataloguem seus jogos, atribuam notas, monitorem o status de progresso (Playing, Completed, PlanToPlay, etc.) e filtrem sua coleção de forma personalizada.
 
