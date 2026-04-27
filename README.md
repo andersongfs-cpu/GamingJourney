@@ -28,6 +28,26 @@ O projeto foi estruturado seguindo princípios de separação de responsabilidad
 
 ## Como Executar o Projeto
 
+## Primeiro Acesso
+O cadastro de novos usuários requer autenticação de Admin. Para usar a API pela primeira vez, é necessário inserir o primeiro administrador diretamente no banco de dados.
+Após rodar as migrations, execute o seguinte SQL no seu SQL Server:
+
+```sql
+INSERT INTO Usuarios (Nome, Email, SenhaHash, DtNasc, DtCadastro, Cargo, EmailConfirmado)
+VALUES (
+    'Admin', 
+    'admin@gamingjourney.com', 
+    '$2a$12$1D2sQdtdFiOTdOTzRDpKvO8FZkWh6Q6R26vKpX8AjtJ2Im1.8H13K', 
+    '1990-01-01', 
+    GETDATE(), 
+    2, 
+    1
+)
+```
+> O hash acima corresponde à senha `password`. Troque imediatamente após o primeiro login usando o endpoint `PUT /api/Usuarios/perfil`.
+
+> O valor `2` no campo `Cargo` corresponde ao enum `Admin`.
+
 ### Pré-requisitos
 * SDK .NET 10 instalado.
 * Instância do SQL Server em execução.
@@ -39,7 +59,7 @@ O projeto foi estruturado seguindo princípios de separação de responsabilidad
    dotnet ef database update
 4. Inicie a aplicação:
    dotnet run
-5. Acesse o Swagger em: https://localhost:PORTA/swagger
+5. Acesse o Swagger em: https://localhost:7064/swagger
 
 ## Roadmap de Desenvolvimento
 
