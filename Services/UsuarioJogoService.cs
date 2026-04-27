@@ -20,13 +20,13 @@ namespace GamingJourney.Services
 
 
 		// Usuário adiciona jogo a sua coleção
-		public async Task<UsuarioJogo?> AdicionarJogoAColecaoAsync(int usuarioId, UsuarioJogoColecaoDto dto)
+		public async Task<UsuarioJogo> AdicionarJogoAColecaoAsync(int usuarioId, UsuarioJogoColecaoDto dto)
 		{
 			// Verifica se o jogo existe
 			var jogoExiste = await _context.Jogos.AnyAsync(j => j.Id == dto.JogoId);
 			if (!jogoExiste)
 			{
-				throw new Exception("Jogo não existe.");
+				throw new ArgumentException("Jogo não existe.");
 			}
 
 			// Verifica se o usuário já tem o jogo registrado
@@ -34,7 +34,7 @@ namespace GamingJourney.Services
 				.AnyAsync(j => j.UsuarioId == usuarioId && j.JogoId == dto.JogoId);
 			if (jaPossui)
 			{
-				throw new Exception("Usuário já possui jogo na coleção.");
+				throw new ArgumentException("Usuário já possui jogo na coleção.");
 			}
 
 			var novaEntrada = new UsuarioJogo
