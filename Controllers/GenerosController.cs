@@ -22,7 +22,7 @@ namespace GamingJourney.Controllers
 
 
 		// Registra um novo gênero
-		[HttpPost("registrar")]
+		[HttpPost("register")]
 		[ProducesResponseType(typeof(GeneroResponseDto), StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> Registrar(GeneroRegistroDto dto)
@@ -66,9 +66,10 @@ namespace GamingJourney.Controllers
 			}
 		}
 
+		// Mais tarde alterar para desativar apenas
 		// Remove gênero do BD por ID
 		[Authorize(Roles = "Admin")]
-		[HttpDelete("excluir-genero/{id:int}")]
+		[HttpDelete("genre-delete/{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
