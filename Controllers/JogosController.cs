@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using GamingJourney.DTOs;
+﻿using GamingJourney.DTOs;
 using GamingJourney.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace GamingJourney.Controllers
 {
@@ -36,16 +33,21 @@ namespace GamingJourney.Controllers
 
 		// Lista jogos castrados por Id
 		[HttpGet("{id:int}")]
+		[ProducesResponseType(typeof(List<JogoResponseDto>), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<ActionResult<JogoExibicaoDto>> ExibirJogosId(int id)
 		{
-			var jogos = await _jogoService.ExibirTodosIdAsync(id);
-			if (jogos == null) return NotFound("Jogo não cadastrado.");
-
+			var jogos = await _jogoService.ExibirPorIdAsync(id);
 			return Ok(jogos);
 		}
 
 		// Registra um novo jogo
-		[HttpPost("registrar")]
+		[Authorize(Roles = "Admin, GM")]
+		[HttpPost("register")]
+		[ProducesResponseType(typeof(JogoResponseDto), StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<IActionResult> RegistrarJogo(JogoRegistroDto dto)
 		{
 			var jogo = await _jogoService.RegistrarAsync(dto);
@@ -53,28 +55,28 @@ namespace GamingJourney.Controllers
 		}
 
 		// Edita/Atualiza um jogo cadastrado
+		[Authorize(Roles = "Admin, GM")]
 		[HttpPut("{id:int}")]
-		[ProducesResponseType(typeof(JogoExibicaoDto), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(JogoResponseDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<JogoExibicaoDto>> AtualizarJogos(int id, JogoAtualizarDto dto)
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<ActionResult<JogoResponseDto>> AtualizarJogos(int id, JogoAtualizarDto dto)
 		{
 			var jogo = await _jogoService.AtualizarAsync(id, dto);
-
-			if (jogo == null) return NotFound("Jogo não encontrado.");
-
 			return Ok(jogo);
 		}
 
 		// Remove um jogo cadastrado
+		[Authorize(Roles = "Admin, GM")]
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<IActionResult> DeletaJogo(int id)
 		{
-			var jogo = await _jogoService.DeletarJogoAsync(id);
-
-			if (jogo == null) return NotFound("Jogo não encontrado.");
-
+			await _jogoService.DeletarJogoAsync(id);
 			return NoContent();
 		}
 	}

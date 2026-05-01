@@ -47,25 +47,29 @@ namespace GamingJourney.Services
 		}
 
 		// Lista os jogos por Id
-		public async Task<JogoExibicaoDto?> ExibirTodosIdAsync(int id)
+		public async Task<JogoResponseDto> ExibirPorIdAsync(int id)
 		{
 			var jogo = await _context.Jogos
 			.Include(j => j.Generos)
 			.Include(j => j.Plataformas)
 			.FirstOrDefaultAsync(j => j.Id == id);
 
-			if (jogo == null) return null;
+			if (jogo == null)
+			{
+				throw new KeyNotFoundException($"Jogo com ID {id} não encontrado.");
+			}
 
-			return _mapper.Map<JogoExibicaoDto>(jogo);
+			return _mapper.Map<JogoResponseDto>(jogo);
 		}
 
 		// Registra um novo Jogo
 		public async Task<JogoResponseDto> RegistrarAsync(JogoRegistroDto dto)
 		{
+			// Verifica se jogo já existe no Bando de Dados
 			var jogoExiste = await _context.Jogos.AnyAsync(j => j.Titulo == dto.Titulo);
 			if (jogoExiste)
 			{
-				throw new Exception("Jogo já cadastrado.");
+				throw new ArgumentException("Jogo já cadastrado.");
 			}
 
 			var jogo = _mapper.Map<Jogo>(dto);
@@ -93,21 +97,24 @@ namespace GamingJourney.Services
 		}
 
 		// Edita/Atualiza um jogo
-		public async Task<JogoExibicaoDto?> AtualizarAsync(int id, JogoAtualizarDto dto)
+		public async Task<JogoExibicaoDto> AtualizarAsync(int id, JogoAtualizarDto dto)
 		{
 			var jogo = await _context.Jogos
 			.Include(j => j.Generos)
 			.Include(j => j.Plataformas)
 			.FirstOrDefaultAsync(j => j.Id == id);
 
-			if (jogo == null) return null;
+			if (jogo == null)
+			{
+				throw new KeyNotFoundException($"Jogo com ID {id} não encontrado.");
+			}
 
 			if (!string.IsNullOrWhiteSpace(dto.Titulo))
 			{
 				var existe = await _context.Jogos.AnyAsync(j => j.Titulo == dto.Titulo && j.Id != id);
 				if (existe)
 				{
-					throw new Exception("Titulo de jogo já existente");
+					throw new ArgumentException("Titulo de jogo já existente");
 				}
 				jogo.Titulo = dto.Titulo;
 			}
@@ -136,16 +143,14 @@ namespace GamingJourney.Services
 		}
 
 		// Exclui um jogo do BD por Id
-		public async Task<bool?> DeletarJogoAsync(int id)
+		public async Task DeletarJogoAsync(int id)
 		{
 			var jogo = await _context.Jogos.FindAsync(id);
 
-			if (jogo == null) throw new Exception("Jogo não encontrado");
+			if (jogo == null) throw new ArgumentException("Jogo não encontrado");
 
 			_context.Jogos.Remove(jogo);
-			return await _context.SaveChangesAsync() > 0;
+			await _context.SaveChangesAsync();
 		}
 	}
-
-
 }

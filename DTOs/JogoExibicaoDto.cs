@@ -2,6 +2,7 @@
 {
 	public class JogoExibicaoDto
 	{
+		public int Id { get; set; }
 		public string Titulo { get; set; } = string.Empty;
 		public string? CapaUrl { get; set; }
 		public List<GeneroExibicaoDto> Generos { get; set; } = new();
