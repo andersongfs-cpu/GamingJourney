@@ -10,7 +10,6 @@ namespace GamingJourney.Services
 	{
 		private readonly AppDbContext _context;
 		private readonly IMapper _mapper;
-
 		public PlataformaService(AppDbContext context, IMapper mapper)
 		{
 			_context = context;
@@ -31,38 +30,39 @@ namespace GamingJourney.Services
 		}
 
 		// Lista plataformas por Id
-		public async Task<PlataformaExibicaoDto?> ExibirTodosIdAsync(int id)
+		public async Task<PlataformaResponseDto> ExibirPorIdAsync(int id)
 		{
 			var plataforma = await _context.Plataformas.FindAsync(id);
-			if (plataforma == null) return null;
-
-			return _mapper.Map<PlataformaExibicaoDto>(plataforma);
+			if (plataforma == null)
+			{
+				throw new KeyNotFoundException($"Plataforma de ID {id} não encontrada");
+			}
+			return _mapper.Map<PlataformaResponseDto>(plataforma);
 		}
 
 		// Adiciona uma nova plataforma
 		public async Task<PlataformaResponseDto> RegistrarAsync(PlataformaRegistroDto dto)
 		{
 			var plataformaExiste = await _context.Plataformas.AnyAsync(p => p.Nome == dto.Nome);
-			if (plataformaExiste) throw new Exception("Plataforma já cadastrada.");
+			if (plataformaExiste) throw new ArgumentException("Plataforma já cadastrada.");
 
 			var plataforma = _mapper.Map<Plataforma>(dto);
 
 			_context.Plataformas.Add(plataforma);
 			await _context.SaveChangesAsync();
-
 			return _mapper.Map<PlataformaResponseDto>(plataforma);
 		}
 
 		// Edita/Put plataforma por Id
-		public async Task<PlataformaExibicaoDto?> AtualizarAsync(int id, PlataformaAtualizarDto dto)
+		public async Task<PlataformaExibicaoDto> AtualizarAsync(int id, PlataformaAtualizarDto dto)
 		{
 			var plataforma = await _context.Plataformas.FindAsync(id);
-			if (plataforma == null) return null;
+			if (plataforma == null) throw new KeyNotFoundException($"Plataforma de ID {id} não encontrada");
 
 			if (!string.IsNullOrWhiteSpace(dto.Nome))
 			{
 				var plataformaExiste = await _context.Plataformas.AnyAsync(p => p.Nome == dto.Nome && p.Id != id);
-				if (plataformaExiste) throw new Exception("Plataforma já cadastrada.");
+				if (plataformaExiste) throw new ArgumentException("Plataforma já cadastrada.");
 
 				plataforma.Nome = dto.Nome;
 			}
@@ -77,13 +77,14 @@ namespace GamingJourney.Services
 		}
 
 		// Remove plataforma do BD
-		public async Task<bool?> DeletarPlataformaAsync(int id)
+		public async Task DeletarPlataformaAsync(int id)
 		{
 			var plataforma = await _context.Plataformas.FindAsync(id);
-			if (plataforma == null) return null;
+
+			if (plataforma == null) throw new KeyNotFoundException($"Plataforma de ID {id} não encontrada.");
 
 			_context.Plataformas.Remove(plataforma);
-			return await _context.SaveChangesAsync() > 0;
+			await _context.SaveChangesAsync();
 		}
 	}
 }

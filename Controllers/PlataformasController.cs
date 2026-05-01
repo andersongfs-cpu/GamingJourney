@@ -1,5 +1,6 @@
 ﻿using GamingJourney.DTOs;
 using GamingJourney.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamingJourney.Controllers
@@ -16,7 +17,8 @@ namespace GamingJourney.Controllers
 		}
 
 		// Registra uma nova plataforma
-		[HttpPost("registrar")]
+		[Authorize(Roles = "Admin, GM")]
+		[HttpPost("register")]
 		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> RegistrarPlataforma(PlataformaRegistroDto dto)
@@ -36,36 +38,37 @@ namespace GamingJourney.Controllers
 
 		// Lista plataformas cadastradas por Id
 		[HttpGet("{id:int}")]
-		[ProducesResponseType(typeof(PlataformaExibicaoDto), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<PlataformaExibicaoDto>> ExibirTodosId(int id)
+		public async Task<ActionResult<PlataformaResponseDto>> ExibirTodosId(int id)
 		{
-			var plataforma = await _plataformaService.ExibirTodosIdAsync(id);
-			if (plataforma == null) return NotFound("Plataforma não encontrada.");
-
+			var plataforma = await _plataformaService.ExibirPorIdAsync(id);
 			return Ok(plataforma);
 		}
 
 		// Edita/Put plataforma por Id
+		[Authorize(Roles = "Admin, GM")]
 		[HttpPut("{id:int}")]
-		[ProducesResponseType(typeof(PlataformaExibicaoDto), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<PlataformaExibicaoDto>> AtualizarPlataforma(int id, PlataformaAtualizarDto dto)
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<ActionResult<PlataformaResponseDto>> AtualizarPlataforma(int id, PlataformaAtualizarDto dto)
 		{
 			var plataformaEdit = await _plataformaService.AtualizarAsync(id, dto);
-			if (plataformaEdit == null) return NotFound("Plataforma não encontrada.");
-
 			return Ok(plataformaEdit);
 		}
 
+		[Authorize(Roles = "Admin, GM")]
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<IActionResult> DeletarPlataforma(int id)
 		{
-			var plataforma = await _plataformaService.DeletarPlataformaAsync(id);
-			if (plataforma == null) return NotFound("Plataforma não encontrada.");
-
+			await _plataformaService.DeletarPlataformaAsync(id);
 			return NoContent();
 		}
 	}
