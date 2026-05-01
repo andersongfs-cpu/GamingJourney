@@ -3,6 +3,7 @@ using GamingJourney.Data;
 using GamingJourney.DTOs;
 using GamingJourney.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace GamingJourney.Services
 {
@@ -30,10 +31,13 @@ namespace GamingJourney.Services
 		}
 
 		// Lista gêneros por Id
-		public async Task<GeneroExibicaoDto?> ExibirTodosIdAsync(int id)
+		public async Task<GeneroExibicaoDto?> ExibirPorIdAsync(int id)
 		{
 			var genero = await _context.Generos.FindAsync(id);
-			if (genero == null) return null;
+			if (genero == null)
+			{
+				throw new KeyNotFoundException($"Gênero com ID {id} não encontrado");
+			}
 
 			return _mapper.Map<GeneroExibicaoDto>(genero);
 		}
@@ -41,11 +45,19 @@ namespace GamingJourney.Services
 		// Registra um novo gênero
 		public async Task<GeneroResponseDto> RegistrarAsync(GeneroRegistroDto dto)
 		{
+			// Valida se usuário colocou uma string no campo de nome
+			if (string.IsNullOrWhiteSpace(dto.Nome))
+			{
+				throw new ArgumentException("O nome do gênero é obrigatório.");
+			}
+
+			// Verifica se o genero inserido existe no Banco de Dados
 			var generoExiste = await _context.Generos.AnyAsync(g => g.Nome == dto.Nome);
 			
+			// Se o gênero já existe, erro 400 BAD REQUEST
 			if(generoExiste)
 			{
-				throw new Exception("Gênero já cadastrado.");
+				throw new ArgumentException("Gênero já cadastrado.");
 			}
 
 			var genero = _mapper.Map<Genero>(dto);
@@ -57,18 +69,21 @@ namespace GamingJourney.Services
 		}
 
 		// Edita/Put gênero por Id
-		public async Task<GeneroExibicaoDto?> AtualizarAsync(int id, GeneroAtualizarDto dto)
+		public async Task<GeneroExibicaoDto> AtualizarAsync(int id, GeneroAtualizarDto dto)
 		{
 			var genero = await _context.Generos.FindAsync(id);
 			
-			if (genero == null) return null;
+			if (genero == null) 
+			{
+				throw new KeyNotFoundException("Gênero não encontrado.");
+			}
 
 			if(!string.IsNullOrWhiteSpace(dto.Nome))
 			{
 				var existe = await _context.Generos.AnyAsync(g => g.Nome == dto.Nome && g.Id != id);
 				if (existe)
 				{
-					throw new Exception("Gênero já cadastrado.");
+					throw new ArgumentException("Gênero já cadastrado.");
 				}
 				genero.Nome = dto.Nome;
 			}
@@ -78,13 +93,17 @@ namespace GamingJourney.Services
 		}
 		
 		// Remove um gênero por Id
-		public async Task<bool?> DeletarGeneroAsync(int id)
+		public async Task DeletarGeneroAsync(int id)
 		{
 			var genero = await _context.Generos.FindAsync(id);
-			if (genero == null) return null;
+
+			if (genero == null)
+			{
+				throw new KeyNotFoundException("Gênero não encontrado.");
+			}
 
 			_context.Generos.Remove(genero);
-			return await _context.SaveChangesAsync() > 0;
+			await _context.SaveChangesAsync();
 		}
 	}
 }

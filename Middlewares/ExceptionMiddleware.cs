@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Security;
 using System.Text.Json;
 
 namespace GamingJourney.Middlewares
@@ -35,6 +36,7 @@ namespace GamingJourney.Middlewares
 				UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized, // Erro de autenticação 401 unauthorized
 				KeyNotFoundException => (int)HttpStatusCode.NotFound, // Erro de não encontrado 404 NotFound
 				ArgumentException => (int)HttpStatusCode.BadRequest, // Erro de argumento inválido 400 BadRequest
+				SecurityException => (int)HttpStatusCode.Forbidden, // Erro, Role do usuário não permite essa ação 403 Forbidden
 				_ => (int)HttpStatusCode.InternalServerError // Erro desconhecido 500
 			};
 
