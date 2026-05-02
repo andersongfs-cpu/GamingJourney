@@ -147,7 +147,7 @@ namespace GamingJourney.Services
 		{
 			var jogo = await _context.Jogos.FindAsync(id);
 
-			if (jogo == null) throw new ArgumentException("Jogo não encontrado");
+			if (jogo == null) throw new KeyNotFoundException("Jogo não encontrado");
 
 			_context.Jogos.Remove(jogo);
 			await _context.SaveChangesAsync();

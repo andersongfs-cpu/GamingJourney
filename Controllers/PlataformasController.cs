@@ -24,7 +24,7 @@ namespace GamingJourney.Controllers
 		public async Task<IActionResult> RegistrarPlataforma(PlataformaRegistroDto dto)
 		{
 			var plataforma = await _plataformaService.RegistrarAsync(dto);
-			return CreatedAtAction(nameof(ExibirTodosId), new { id = plataforma.Id }, plataforma);
+			return CreatedAtAction(nameof(ExibirPorId), new { id = plataforma.Id }, plataforma);
 		}
 		
 		// Lista plataformas cadastradas por nome
@@ -40,7 +40,7 @@ namespace GamingJourney.Controllers
 		[HttpGet("{id:int}")]
 		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<PlataformaResponseDto>> ExibirTodosId(int id)
+		public async Task<ActionResult<PlataformaResponseDto>> ExibirPorId(int id)
 		{
 			var plataforma = await _plataformaService.ExibirPorIdAsync(id);
 			return Ok(plataforma);
@@ -60,6 +60,7 @@ namespace GamingJourney.Controllers
 			return Ok(plataformaEdit);
 		}
 
+		// Deleta plataforma do Banco de Dados
 		[Authorize(Roles = "Admin, GM")]
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]

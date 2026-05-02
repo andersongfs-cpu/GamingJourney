@@ -31,7 +31,7 @@ namespace GamingJourney.Services
 
 			if (emailExiste)
 			{
-				throw new Exception("Email já cadastrado.");
+				throw new ArgumentException("Email já cadastrado.");
 			}
 
 			// Mapeia DTO para a entidade
@@ -56,7 +56,7 @@ namespace GamingJourney.Services
 
 			if (usuario == null || !BCrypt.Net.BCrypt.Verify(dto.Senha, usuario.SenhaHash))
 			{
-				throw new Exception("Email ou senha inválidos");
+				throw new ArgumentException("Email ou senha inválidos");
 			}
 
 			return GerarToken(usuario);
@@ -107,20 +107,26 @@ namespace GamingJourney.Services
 		}
 
 		// Lista usuários por Id
-		public async Task<UsuarioExibicaoDto?> GetPorId(int id)
+		public async Task<UsuarioResponseDto> GetPorId(int id)
 		{
 			var usuario = await _context.Usuarios.FindAsync(id);
 			
-			if (usuario == null){ return null; }
+			if (usuario == null)
+			{
+				throw new KeyNotFoundException($"Usuário de ID {id} não encontrado.");
+			}
 
-			return _mapper.Map<UsuarioExibicaoDto>(usuario);
+			return _mapper.Map<UsuarioResponseDto>(usuario);
 		}
 
 		// Edita/Put usuários por Id
-		public async Task<UsuarioExibicaoDto?> AtualizarAsync(int id, UsuarioAtualizarDto editDto)
+		public async Task<UsuarioResponseDto> AtualizarAsync(int id, UsuarioAtualizarDto editDto)
 		{
 			var usuario = await _context.Usuarios.FindAsync(id);
-			if (usuario == null) return null;
+			if (usuario == null)
+			{
+				throw new KeyNotFoundException($"Usuário de ID {id} não encontrado.");
+			}
 
 			if (!string.IsNullOrWhiteSpace(editDto.Nome))
 			{
@@ -132,7 +138,7 @@ namespace GamingJourney.Services
 				var existeEmail = await _context.Usuarios.AnyAsync(e => e.Email == editDto.Email);
 				if (existeEmail)
 				{
-					throw new Exception("Email já cadastrado.");
+					throw new ArgumentException("Email já cadastrado.");
 				}
 				usuario.Email = editDto.Email;
 				usuario.EmailConfirmado = false;
@@ -149,17 +155,20 @@ namespace GamingJourney.Services
 				usuario.DtNasc = editDto.DtNasc.Value;
 			}
 			await _context.SaveChangesAsync();
-			return _mapper.Map<UsuarioExibicaoDto>(usuario);
+			return _mapper.Map<UsuarioResponseDto>(usuario);
 		}
 
 		// Deleta usuário do BD
-		public async Task<bool?> DelUsuario(int id)
+		public async Task DelUsuario(int id)
 		{
 			var usuario = await _context.Usuarios.FindAsync(id);
-			if (usuario == null) return null;
+			if (usuario == null)
+			{
+				throw new KeyNotFoundException($"Usuário de ID{id} não encontrado.");
+			}
 
 			_context.Usuarios.Remove(usuario);
-			return await _context.SaveChangesAsync() > 0;
+			await _context.SaveChangesAsync();
 		}
 	}
 }

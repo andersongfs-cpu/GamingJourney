@@ -54,7 +54,7 @@ namespace GamingJourney.Services
 		}
 
 		// Edita/Put plataforma por Id
-		public async Task<PlataformaExibicaoDto> AtualizarAsync(int id, PlataformaAtualizarDto dto)
+		public async Task<PlataformaResponseDto> AtualizarAsync(int id, PlataformaAtualizarDto dto)
 		{
 			var plataforma = await _context.Plataformas.FindAsync(id);
 			if (plataforma == null) throw new KeyNotFoundException($"Plataforma de ID {id} não encontrada");
@@ -73,7 +73,7 @@ namespace GamingJourney.Services
 			}
 
 			await _context.SaveChangesAsync();
-			return _mapper.Map<PlataformaExibicaoDto>(plataforma);
+			return _mapper.Map<PlataformaResponseDto>(plataforma);
 		}
 
 		// Remove plataforma do BD

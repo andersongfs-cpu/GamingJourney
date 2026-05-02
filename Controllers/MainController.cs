@@ -6,6 +6,7 @@ namespace GamingJourney.Controllers
 	[ApiController]
 	public abstract class MainController : ControllerBase
 	{
+		// Obtém a ID do usuário Logado.
 		protected int ObterUsuarioId()
 		{
 			var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
