@@ -2,6 +2,7 @@
 using GamingJourney.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GamingJourney.Controllers
 {
@@ -19,6 +20,7 @@ namespace GamingJourney.Controllers
 
 		// Cadastra novo usuário		
 		[HttpPost("registrar")]
+		[EnableRateLimiting("RegistroPolicy")]
 		[ProducesResponseType(typeof(UsuarioResponseDto), StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> Registrar(UsuarioRegistroDto dto)
@@ -29,6 +31,7 @@ namespace GamingJourney.Controllers
 
 		// Login
 		[HttpPost("login")]
+		[EnableRateLimiting("RegistroPolicy")]
 		[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> Login(UsuarioLoginDto dto)

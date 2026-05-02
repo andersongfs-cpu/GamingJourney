@@ -7,8 +7,27 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuração do Rate Limiting
+builder.Services.AddRateLimiter(options =>
+{
+	// Define o código de status quando o limite é excedido (429 Too many requests)
+	options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+	options.AddPolicy("RegistroPolicy", httpContext =>
+		RateLimitPartition.GetFixedWindowLimiter(
+			partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? httpContext.Request.Headers.Host.ToString(),
+			factory: _ => new FixedWindowRateLimiterOptions
+			{
+				PermitLimit = 10,                  // Máximo de requisições (10)
+				Window = TimeSpan.FromMinutes(1),  // Janela de tempo entre requisições (1min)				
+				QueueLimit = 0                     // Não deixa requisições na fila				
+			}));
+});
 
 // JWT
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]!);
@@ -92,11 +111,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<GamingJourney.Middlewares.ExceptionMiddleware>();
+app.UseRateLimiter();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 
 // Roda migrations automaticamente ao subir
 using (var scope = app.Services.CreateScope())
@@ -105,4 +124,5 @@ using (var scope = app.Services.CreateScope())
 	db.Database.Migrate();
 }
 
+app.MapControllers();
 app.Run();
