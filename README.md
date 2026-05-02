@@ -52,6 +52,12 @@ VALUES (
 
 > O valor `2` no campo `Cargo` corresponde ao enum `Admin`.
 
+### Executando com Docker (recomendado)
+1. Clone o repositório
+2. Execute:
+3. Acesse o Swagger em: http://localhost:8080/swagger
+4. Insira o primeiro admin via SQL conforme instruções acima
+
 ### Pré-requisitos
 * SDK .NET 10 instalado.
 * Instância do SQL Server em execução.
@@ -67,7 +73,7 @@ VALUES (
 
 ## Roadmap de Desenvolvimento
 
-- [ ] Implementação de Containerização com Docker.
+- [X] Implementação de Containerização com Docker.
 - [ ] Dashboard com estatísticas da coleção (Média de notas, gêneros frequentes).
 - [ ] Vínculo de plataforma específica por registro de usuário.
 
