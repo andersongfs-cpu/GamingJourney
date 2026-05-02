@@ -29,7 +29,6 @@ namespace GamingJourney.Controllers
 			return Ok(resultado);
 		}
 
-
 		// Mostra a lista de jogos do usuário
 		[HttpGet]
 		public async Task<ActionResult<List<UsuarioJogoExibicaoDto>>> ExibirListaDeJogos(

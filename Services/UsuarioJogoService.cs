@@ -2,7 +2,6 @@
 using GamingJourney.Data;
 using GamingJourney.DTOs;
 using GamingJourney.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace GamingJourney.Services
@@ -106,7 +105,7 @@ namespace GamingJourney.Services
 		}
 
 		// Deleta jogo da lista do usuário
-		public async Task<bool?> DeletarJogoAsync(int usuarioId, int? jogoId, string? nomeJogo)
+		public async Task DeletarJogoAsync(int usuarioId, int? jogoId, string? nomeJogo)
 		{
 			// Segurança - Verifica Id do usuário.
 			var query = _context.UsuariosJogos.AsQueryable().Where(u => u.UsuarioId == usuarioId);
@@ -133,8 +132,6 @@ namespace GamingJourney.Services
 
 			_context.UsuariosJogos.Remove(delJogo);
 			await _context.SaveChangesAsync();
-
-			return true;
 		}
 
 		// Edita/Put Jogo
@@ -154,9 +151,8 @@ namespace GamingJourney.Services
 			{
 				editJogo = await query.FirstOrDefaultAsync(uj => uj.JogoId == jogoId);
 			}
-
 			// Busca jogo na lista poor nome caso Id não tenha sido inserido
-			if (!string.IsNullOrEmpty(nomeJogo))
+			else if (!string.IsNullOrEmpty(nomeJogo))
 			{
 				editJogo = await query.FirstOrDefaultAsync(uj => uj.Jogo.Titulo.ToLower() == nomeJogo.ToLower());
 			}
@@ -176,10 +172,9 @@ namespace GamingJourney.Services
 			// Se Nota tem novo valor inserido, propriedade é atualizada
 			if (editDto.Nota.HasValue)
 			{
-				editJogo.Nota = editDto.Nota;
+				editJogo.Nota = editDto.Nota.Value;
 			}
 
-			_context.UsuariosJogos.Update(editJogo);
 			await _context.SaveChangesAsync();
 
 			return new UsuarioJogoExibicaoDto

@@ -1,6 +1,5 @@
 ﻿using GamingJourney.DTOs;
 using GamingJourney.Services;
-using GamingJourney.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

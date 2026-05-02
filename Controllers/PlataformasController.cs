@@ -7,7 +7,7 @@ namespace GamingJourney.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class PlataformasController : ControllerBase
+	public class PlataformasController : MainController
 	{
 		private readonly PlataformaService _plataformaService;
 
@@ -17,7 +17,7 @@ namespace GamingJourney.Controllers
 		}
 
 		// Registra uma nova plataforma
-		[Authorize(Roles = "Admin, GM")]
+		[Authorize(Roles = "Admin,GM")]
 		[HttpPost("register")]
 		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -47,7 +47,7 @@ namespace GamingJourney.Controllers
 		}
 
 		// Edita/Put plataforma por Id
-		[Authorize(Roles = "Admin, GM")]
+		[Authorize(Roles = "Admin,GM")]
 		[HttpPut("{id:int}")]
 		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,7 +61,7 @@ namespace GamingJourney.Controllers
 		}
 
 		// Deleta plataforma do Banco de Dados
-		[Authorize(Roles = "Admin, GM")]
+		[Authorize(Roles = "Admin,GM")]
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]

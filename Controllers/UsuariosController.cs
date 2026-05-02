@@ -1,7 +1,6 @@
 ﻿using GamingJourney.DTOs;
 using GamingJourney.Services;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamingJourney.Controllers

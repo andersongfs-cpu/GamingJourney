@@ -7,7 +7,7 @@ namespace GamingJourney.Controllers
 {
 	[Route("Api/[controller]")]
 	[ApiController]
-	public class JogosController : ControllerBase
+	public class JogosController : MainController
 	{
 		private readonly JogoService _jogoService;
 		private readonly GeneroService _generoService;

@@ -3,7 +3,6 @@ using GamingJourney.Data;
 using GamingJourney.DTOs;
 using GamingJourney.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace GamingJourney.Services
 {
