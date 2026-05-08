@@ -102,16 +102,32 @@ builder.Services.AddSwaggerGen(c =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
+// Política de CORS(Compartilhamento de Recursos entre Origens)
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("FreeAccess", policy =>
+	{
+		policy.AllowAnyOrigin()
+			  .AllowAnyHeader()
+			  .AllowAnyMethod();
+	});
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(c =>
+	{
+		c.SwaggerEndpoint("/swagger/v1/swagger.json", "GamingJourney API v1");
+		c.RoutePrefix = string.Empty; // Swagger vira a página principal
+	});
 }
 
 app.UseMiddleware<GamingJourney.Middlewares.ExceptionMiddleware>();
 app.UseRateLimiter();
+app.UseCors("FreeAccess"); // UseCors
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
