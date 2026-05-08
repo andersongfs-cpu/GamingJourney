@@ -115,15 +115,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// Configura para usar o swagger
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-	app.UseSwagger();
-	app.UseSwaggerUI(c =>
-	{
-		c.SwaggerEndpoint("/swagger/v1/swagger.json", "GamingJourney API v1");
-		c.RoutePrefix = string.Empty; // Swagger vira a página principal
-	});
-}
+	c.SwaggerEndpoint("/swagger/v1/swagger.json", "GamingJourney API v1");
+	c.RoutePrefix = string.Empty; // Swagger vira a página principal
+});
+
 
 app.UseMiddleware<GamingJourney.Middlewares.ExceptionMiddleware>();
 app.UseRateLimiter();
