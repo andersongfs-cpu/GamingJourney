@@ -17,7 +17,15 @@ namespace GamingJourney.Controllers
 		}
 
 
-		// Registra um novo gênero
+		/// <summary>
+		/// Cadastra um novo gênero de jogo no sistema.
+		/// </summary>
+		/// <remarks>
+		/// Requer privilégio de Admin ou GM.
+		/// Certifique-se de que o nome do gênero seja único para evitar erros de duplicidade.
+		/// </remarks>
+		/// <param name="dto">Objeto contendo o nome e informações do novo gênero.</param>
+		/// <returns>O gênero recém-criado com seu respectivo ID.</returns>
 		[Authorize(Roles = "Admin, GM")]
 		[HttpPost("register")]
 		[ProducesResponseType(typeof(GeneroResponseDto), StatusCodes.Status201Created)]
@@ -31,7 +39,11 @@ namespace GamingJourney.Controllers
 		}
 
 
-		// Lista generos cadastrados por Nome
+		/// <summary>
+		/// Recupera a lista de gêneros cadastrados, com suporte a filtro por nome.
+		/// </summary>
+		/// <remarks> Se o parâmetro 'nome' for nulo, o sistema retorna todos os registros. </remarks>
+		/// <param name="nome">Opcional: termo para filtrar gêneros que contenham parte deste nome.</param>
 		[HttpGet]
 		[ProducesResponseType(typeof(List<GeneroExibicaoDto>), StatusCodes.Status200OK)]
 		public async Task<ActionResult<List<GeneroExibicaoDto>>> ExibirGeneros([FromQuery] string? nome)
@@ -40,7 +52,13 @@ namespace GamingJourney.Controllers
 			return Ok(generos);
 		}
 
-		// Lista generos cadastrados por Id
+		/// <summary>
+		/// Busca um gênero específico pelo ID.
+		/// </summary>
+		/// <remarks>
+		/// Se o ID não existir no banco, ele vai retornar um erro 404 (Não Encontrado).
+		/// </remarks>
+		/// <param name="id">ID numérico do gênero.</param>
 		[HttpGet("{id:int}")]
 		[ProducesResponseType(typeof(GeneroExibicaoDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -48,11 +66,16 @@ namespace GamingJourney.Controllers
 		{
 			var generosId = await _generoService.ExibirPorIdAsync(id);
 			return Ok(generosId);
-
 		}
 
-		// Mais tarde alterar para desativar apenas
-		// Remove gênero do BD por ID
+		/// <summary>
+		/// Remove um gênero do sistema.
+		/// </summary>
+		/// <remarks>
+		/// Atenção: Essa ação é permanente e vai deletar o gênero do banco de dados.
+		/// Requer permissão de Admin ou GM.
+		/// </remarks>
+		/// <param name="id">ID do gênero que será apagado.</param>
 		[Authorize(Roles = "Admin, GM")]
 		[HttpDelete("genre-delete/{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -65,7 +88,16 @@ namespace GamingJourney.Controllers
 			return NoContent();
 		}
 
-		// Edita/Put gênero por Id
+		/// <summary>
+		/// Atualiza as informações de um gênero existente.
+		/// </summary>
+		/// <remarks>
+		/// Use este endpoint para alterar dados como o nome do gênero. 
+		/// Requer permissão de Admin ou GM.
+		/// </remarks>
+		/// <param name="id">O ID do gênero que você quer editar.</param>
+		/// <param name="dto">Os novos dados para a atualização.</param>
+		/// <returns>O gênero já atualizado.</returns>
 		[Authorize(Roles = "Admin, GM")]
 		[HttpPut("{id:int}")]
 		[ProducesResponseType(typeof(GeneroExibicaoDto), StatusCodes.Status200OK)]

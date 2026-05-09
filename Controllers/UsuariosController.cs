@@ -18,7 +18,14 @@ namespace GamingJourney.Controllers
 		}
 
 
-		// Cadastra novo usuário		
+		/// <summary>
+		/// Cria uma nova conta de usuário.
+		/// </summary>
+		/// <remarks>
+		/// Este endpoint possui limite de requisições por IP para evitar abusos. 
+		/// Use para se cadastrar no sistema GamingJourney.
+		/// </remarks>
+		/// <param name="dto">Dados de cadastro (Nome, Email, Senha).</param>		
 		[HttpPost("registrar")]
 		[EnableRateLimiting("RegistroPolicy")]
 		[ProducesResponseType(typeof(UsuarioResponseDto), StatusCodes.Status201Created)]
@@ -29,7 +36,14 @@ namespace GamingJourney.Controllers
 			return CreatedAtAction(nameof(ExibirPorId), new { id = usuario.Id }, usuario);
 		}
 
-		// Login
+		/// <summary>
+		/// Realiza o login e retorna um token de acesso.
+		/// </summary>
+		/// <remarks>
+		/// O token JWT retornado deve ser usado nos outros endpoints que exigem autorização.
+		/// Também possui limite de tentativas por segurança.
+		/// </remarks>
+		/// <param name="dto">Email e senha do usuário.</param>
 		[HttpPost("login")]
 		[EnableRateLimiting("RegistroPolicy")]
 		[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -40,7 +54,13 @@ namespace GamingJourney.Controllers
 			return Ok(new { token });
 		}
 
-		// Busca usuário por Id
+		/// <summary>
+		/// Busca os dados públicos de um usuário pelo ID.
+		/// </summary>
+		/// <remarks>
+		/// Útil para visualizar informações de perfil de outros usuários ou do sistema.
+		/// </remarks>
+		/// <param name="id">ID numérico do usuário.</param>
 		[HttpGet("{id:int}")]
 		[ProducesResponseType(typeof(UsuarioResponseDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -50,7 +70,14 @@ namespace GamingJourney.Controllers
 			return Ok(usuario);
 		}
 
-		// Busca usuário por Nome ou Email
+		/// <summary>
+		/// Lista usuários cadastrados com filtros opcionais.
+		/// </summary>
+		/// <remarks>
+		/// Permite buscar usuários especificamente pelo nome ou pelo e-mail.
+		/// </remarks>
+		/// <param name="nome">Opcional: Parte do nome do usuário.</param>
+		/// <param name="email">Opcional: E-mail exato para busca.</param>
 		[HttpGet]
 		[ProducesResponseType(typeof(List<UsuarioExibicaoDto>), StatusCodes.Status200OK)]
 		public async Task<ActionResult<List<UsuarioExibicaoDto>>> Listar(
@@ -61,7 +88,13 @@ namespace GamingJourney.Controllers
 			return Ok(lista);
 		}
 
-		// Edita Usuário
+		/// <summary>
+		/// Edita os dados do seu próprio perfil.
+		/// </summary>
+		/// <remarks>
+		/// Requer estar logado. O sistema identifica automaticamente qual usuário está logado através do token.
+		/// </remarks>
+		/// <param name="dto">Novos dados (como nome ou e-mail) para atualizar.</param>
 		[Authorize]
 		[HttpPut("perfil")]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,7 +108,12 @@ namespace GamingJourney.Controllers
 			return NoContent();
 		}
 
-		// Exclui usuário
+		/// <summary>
+		/// Encerra e apaga a sua própria conta.
+		/// </summary>
+		/// <remarks>
+		/// Requer estar logado. Atenção: Esta ação é definitiva e removerá seu acesso ao sistema.
+		/// </remarks>
 		[Authorize]
 		[HttpDelete("excluir-perfil")]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]		

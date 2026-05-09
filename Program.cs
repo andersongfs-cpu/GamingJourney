@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Threading.RateLimiting;
+using System.Reflection;
 using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,10 +70,25 @@ builder.Services.AddControllers()
 		// Transforma Enums em strings
 		options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 	});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-	c.SwaggerDoc("v1", new OpenApiInfo { Title = "GamingJourney API", Version = "v1" });
+	c.SwaggerDoc("v1", new OpenApiInfo
+	{ 
+		Title = "GamingJourney API", 
+		Version = "v1",
+		Description = "API para gerenciamento de biblioteca de jogos."
+	});
+
+	// Lógica para descrições (XML)
+	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+	if (File.Exists(xmlPath))
+	{
+		c.IncludeXmlComments(xmlPath);
+	}
+
 	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
 		Name = "Authorization",
@@ -82,6 +98,7 @@ builder.Services.AddSwaggerGen(c =>
 		In = ParameterLocation.Header,
 		Description = "Digite: Bearer {seu token}"
 	});
+
 	c.AddSecurityRequirement(new OpenApiSecurityRequirement
 	{
 		{
@@ -120,7 +137,10 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
 	c.SwaggerEndpoint("/swagger/v1/swagger.json", "GamingJourney API v1");
-	c.RoutePrefix = string.Empty; // Swagger vira a página principal
+	if (app.Environment.IsDevelopment())
+	{
+		c.RoutePrefix = string.Empty;
+	}
 });
 
 

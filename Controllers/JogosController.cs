@@ -20,7 +20,16 @@ namespace GamingJourney.Controllers
 			_plataformaService = plataformaService;
 		}
 
-		// Lista jogos cadastrados por nome
+		/// <summary>
+		/// Lista todos os jogos com filtros opcionais.
+		/// </summary>
+		/// <remarks>
+		/// Você pode buscar jogos por título, nome do gênero ou nome da plataforma. 
+		/// Se não enviar nenhum parâmetro, o sistema traz a lista completa.
+		/// </remarks>
+		/// <param name="titulo">Opcional: Parte do nome do jogo.</param>
+		/// <param name="genero">Opcional: Nome do gênero (ex: RPG, Ação).</param>
+		/// <param name="plataforma">Opcional: Nome da plataforma (ex: PC, PS5).</param>
 		[HttpGet]
 		public async Task<ActionResult<List<JogoExibicaoDto>>> ExibirJogos(
 		[FromQuery] string? titulo,
@@ -31,7 +40,13 @@ namespace GamingJourney.Controllers
 			return Ok(jogos);
 		}
 
-		// Lista jogos castrados por Id
+		/// <summary>
+		/// Busca os detalhes de um jogo específico.
+		/// </summary>
+		/// <remarks>
+		/// Use este endpoint para ver todas as informações de um jogo usando o ID dele.
+		/// </remarks>
+		/// <param name="id">ID do jogo que você está procurando.</param>
 		[HttpGet("{id:int}")]
 		[ProducesResponseType(typeof(List<JogoResponseDto>), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,7 +56,13 @@ namespace GamingJourney.Controllers
 			return Ok(jogos);
 		}
 
-		// Registra um novo jogo
+		/// <summary>
+		/// Adiciona um novo jogo à biblioteca.
+		/// </summary>
+		/// <remarks>
+		/// Requer permissão de Admin ou GM. Informe os dados básicos e os IDs de gênero e plataforma.
+		/// </remarks>
+		/// <param name="dto">Dados do jogo que será cadastrado.</param>
 		[Authorize(Roles = "Admin, GM")]
 		[HttpPost("register")]
 		[ProducesResponseType(typeof(JogoResponseDto), StatusCodes.Status201Created)]
@@ -54,7 +75,14 @@ namespace GamingJourney.Controllers
 			return CreatedAtAction(nameof(ExibirJogosId), new { id = jogo.Id }, jogo);
 		}
 
-		// Edita/Atualiza um jogo cadastrado
+		/// <summary>
+		/// Edita as informações de um jogo já cadastrado.
+		/// </summary>
+		/// <remarks>
+		/// Requer permissão de Admin ou GM. Use para corrigir nomes, descrições ou vínculos do jogo.
+		/// </remarks>
+		/// <param name="id">ID do jogo que você quer mudar.</param>
+		/// <param name="dto">Novos dados para atualizar o jogo.</param>
 		[Authorize(Roles = "Admin, GM")]
 		[HttpPut("{id:int}")]
 		[ProducesResponseType(typeof(JogoResponseDto), StatusCodes.Status200OK)]
@@ -67,7 +95,13 @@ namespace GamingJourney.Controllers
 			return Ok(jogo);
 		}
 
-		// Remove um jogo cadastrado
+		/// <summary>
+		/// Apaga um jogo permanentemente do sistema.
+		/// </summary>
+		/// <remarks>
+		/// Requer permissão de Admin ou GM. Cuidado: uma vez deletado, não dá para recuperar.
+		/// </remarks>
+		/// <param name="id">ID do jogo que será removido.</param>
 		[Authorize(Roles = "Admin, GM")]
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]

@@ -16,7 +16,13 @@ namespace GamingJourney.Controllers
 			_plataformaService = plataformaService;
 		}
 
-		// Registra uma nova plataforma
+		/// <summary>
+		/// Cadastra uma nova plataforma (PC, Console, etc).
+		/// </summary>
+		/// <remarks>
+		/// Requer permissão de Admin ou GM. Informe o nome da plataforma para registro.
+		/// </remarks>
+		/// <param name="dto">Dados da plataforma que será criada.</param>
 		[Authorize(Roles = "Admin,GM")]
 		[HttpPost("register")]
 		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status201Created)]
@@ -26,8 +32,14 @@ namespace GamingJourney.Controllers
 			var plataforma = await _plataformaService.RegistrarAsync(dto);
 			return CreatedAtAction(nameof(ExibirPorId), new { id = plataforma.Id }, plataforma);
 		}
-		
-		// Lista plataformas cadastradas por nome
+
+		/// <summary>
+		/// Lista todas as plataformas ou filtra por nome.
+		/// </summary>
+		/// <remarks>
+		/// Se não passar nenhum nome no filtro, ele traz todas as plataformas do banco.
+		/// </remarks>
+		/// <param name="nome">Opcional: Nome ou parte do nome da plataforma.</param>
 		[HttpGet]
 		[ProducesResponseType(typeof(List<PlataformaExibicaoDto>), StatusCodes.Status200OK)]
 		public async Task<ActionResult<List<PlataformaExibicaoDto>>> ExibirTodos([FromQuery] string? nome)
@@ -36,7 +48,13 @@ namespace GamingJourney.Controllers
 			return Ok(plataformas);
 		}
 
-		// Lista plataformas cadastradas por Id
+		/// <summary>
+		/// Busca os detalhes de uma plataforma pelo ID.
+		/// </summary>
+		/// <remarks>
+		/// Útil para verificar os dados específicos de uma única plataforma cadastrada.
+		/// </remarks>
+		/// <param name="id">ID numérico da plataforma.</param>
 		[HttpGet("{id:int}")]
 		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -46,7 +64,14 @@ namespace GamingJourney.Controllers
 			return Ok(plataforma);
 		}
 
-		// Edita/Put plataforma por Id
+		/// <summary>
+		/// Altera o nome ou dados de uma plataforma existente.
+		/// </summary>
+		/// <remarks>
+		/// Requer permissão de Admin ou GM. Identifique a plataforma pelo ID e envie os novos dados.
+		/// </remarks>
+		/// <param name="id">ID da plataforma que você quer editar.</param>
+		/// <param name="dto">Novas informações para atualizar.</param>
 		[Authorize(Roles = "Admin,GM")]
 		[HttpPut("{id:int}")]
 		[ProducesResponseType(typeof(PlataformaResponseDto), StatusCodes.Status200OK)]
@@ -60,7 +85,13 @@ namespace GamingJourney.Controllers
 			return Ok(plataformaEdit);
 		}
 
-		// Deleta plataforma do Banco de Dados
+		/// <summary>
+		/// Remove uma plataforma do sistema.
+		/// </summary>
+		/// <remarks>
+		/// Requer permissão de Admin ou GM. Cuidado: a exclusão é definitiva.
+		/// </remarks>
+		/// <param name="id">ID da plataforma que será apagada.</param>
 		[Authorize(Roles = "Admin,GM")]
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]

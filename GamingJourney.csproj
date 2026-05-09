@@ -5,7 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <NuGetAuditSuppress>true</NuGetAuditSuppress>
-    <NoWarn>NU1903</NoWarn>
+    <NoWarn>NU1903, 1591</NoWarn>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
