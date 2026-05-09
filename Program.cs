@@ -138,9 +138,7 @@ app.UseSwaggerUI(c =>
 {
 	c.SwaggerEndpoint("/swagger/v1/swagger.json", "GamingJourney API v1");
 	if (app.Environment.IsDevelopment())
-	{
-		c.RoutePrefix = string.Empty;
-	}
+	c.RoutePrefix = string.Empty;	
 });
 
 
