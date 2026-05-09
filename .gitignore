@@ -420,3 +420,8 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Configurações sensíveis (GamingJourney)
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json

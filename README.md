@@ -2,9 +2,15 @@
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet)
 ![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?logo=microsoftsqlserver&logoColor=white)
+![Azure](https://img.shields.io/badge/Azure-0078D4?logo=microsoftazure&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?logo=jsonwebtokens)
 
-GamingJourney é uma API REST desenvolvida para o gerenciamento de bibliotecas pessoais de jogos. A aplicação permite que usuários, após se cadastrarem e fazerem um login, cataloguem seus jogos, atribuam notas, monitorem o status de progresso (Playing, Completed, PlanToPlay, etc.) e filtrem sua coleção de forma personalizada.
+O **GamingJourney** é uma API REST robusta desenvolvida para o gerenciamento de bibliotecas pessoais de jogos. A aplicação permite que usuários, após se cadastrarem e fazerem um login, cataloguem seus jogos, atribuam notas, monitorem o status de progresso (Playing, Completed, PlanToPlay, etc.) e filtrem sua coleção de forma personalizada.
+
+## 🚀 Novidades: Deploy e Infraestrutura
+A API encontra-se atualmente hospedada no **Azure App Service**, utilizando **Azure SQL Database** como persistência de dados. O projeto utiliza containers **Docker** para garantir a consistência entre os ambientes de desenvolvimento e produção.
+[📎Clique aqui para acessar a API (Swagger Live Demo)](https://gamingjourney-cbd2gngwfabvg9gk.canadaeast-01.azurewebsites.net/index.html)
 
 ## Tecnologias Utilizadas
 * Runtime: .NET 10
@@ -15,6 +21,7 @@ GamingJourney é uma API REST desenvolvida para o gerenciamento de bibliotecas p
 * Autenticação: JWT (JSON Web Token)
 * Mapeamento: AutoMapper e Mapeamento Manual
 * Documentação: Swagger (OpenAPI)
+* Cloud: Azure App Service & Azure SQL
 
 ## Arquitetura e Padrões
 O projeto foi estruturado seguindo princípios de separação de responsabilidades para facilitar a manutenção e escalabilidade:
@@ -74,6 +81,8 @@ VALUES (
 ## Roadmap de Desenvolvimento
 
 - [X] Implementação de Containerização com Docker.
+- [X] Deploy automatizado no Azure (CI/CD via GitHub Actions)
+- [ ] Integração com APIs externas (Preço em tempo real via Steam API, etc.)
 - [ ] Dashboard com estatísticas da coleção (Média de notas, gêneros frequentes).
 - [ ] Vínculo de plataforma específica por registro de usuário.
 
