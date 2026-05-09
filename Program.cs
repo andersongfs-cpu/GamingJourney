@@ -152,8 +152,18 @@ app.UseAuthorization();
 // Roda migrations automaticamente ao subir
 using (var scope = app.Services.CreateScope())
 {
-	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-	db.Database.Migrate();
+	var services = scope.ServiceProvider;
+	try
+	{
+		var db = services.GetRequiredService<AppDbContext>();
+		db.Database.Migrate();
+	}
+	catch (Exception ex)
+	{
+		// Se o banco demorar a acordar e der timeout, o erro é capturado aqui e não quebra a API.
+		var logger = services.GetRequiredService<ILogger<Program>>();
+		logger.LogError(ex, "Ocorreu um erro ao rodar as migrations. O banco de dados pode estar indisponível no momento da inicialização.");
+	}
 }
 
 app.MapControllers();

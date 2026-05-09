@@ -10,7 +10,7 @@ O **GamingJourney** é uma API REST robusta desenvolvida para o gerenciamento de
 
 ## 🚀 Novidades: Deploy e Infraestrutura
 A API encontra-se atualmente hospedada no **Azure App Service**, utilizando **Azure SQL Database** como persistência de dados. O projeto utiliza containers **Docker** para garantir a consistência entre os ambientes de desenvolvimento e produção.
-[📎Clique aqui para acessar a API (Swagger Live Demo)](https://gamingjourney-cbd2gngwfabvg9gk.canadaeast-01.azurewebsites.net/swagger/index.html)
+[📎Clique aqui para acessar a API (Swagger Live Demo)](https://gamingjourney-cbd2gngwfabvg9gk.canadaeast-01.azurewebsites.net/index.html)
 
 ## Tecnologias Utilizadas
 * Runtime: .NET 10
