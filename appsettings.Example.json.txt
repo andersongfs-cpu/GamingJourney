@@ -1,4 +1,0 @@
-﻿{
-  "ConnectionStrings": { "DefaultConnection": "Sua-String-Aqui" },
-  "Jwt": { "Key": "Sua-Chave-Secreta-Aqui" }
-}
